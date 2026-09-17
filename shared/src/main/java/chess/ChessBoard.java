@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -47,5 +50,40 @@ public class ChessBoard {
         squares = new ChessPiece[8][8];
 
         // Add all the pieces
+        ChessPiece.PieceType[] backRanks = {
+                ChessPiece.PieceType.ROOK,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.QUEEN,
+                ChessPiece.PieceType.KING,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.ROOK
+        };
+
+        // WHITE Pieces
+        for (int col = 0; col < 8; col++) {
+            addPiece(new ChessPosition(1,col +1), new ChessPiece(ChessGame.TeamColor.WHITE, backRanks[col]));
+            addPiece(new ChessPosition(2,col +1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+        }
+
+        // BLACK Pieces
+        for (int col = 0; col < 8; col++) {
+            addPiece(new ChessPosition(8,col +1), new ChessPiece(ChessGame.TeamColor.BLACK, backRanks[col]));
+            addPiece(new ChessPosition(7,col +1), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+        }
+    }
+
+    // Generated from intelliJ
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        return Objects.deepEquals(squares, that.squares);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(squares);
     }
 }
