@@ -8,6 +8,9 @@ package chess;
  */
 public class ChessBoard {
 
+    // Make a data sctructure of the board
+    ChessPiece[][] squares = new ChessPiece[8][8];
+    // This is a constructor for initialization. This will create an empty board
     public ChessBoard() {
         
     }
@@ -19,7 +22,8 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        // Jave is 0 based, so that's why we need to subtract 1 on the position.
+        squares[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -30,7 +34,8 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        // Get the position
+        return squares[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -38,6 +43,9 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        // Initialize the new board
+        squares = new ChessPiece[8][8];
+
+        // Add all the pieces
     }
 }
