@@ -66,6 +66,10 @@ public class ChessPiece {
             kingMoves(board, myPosition, row, col, myColor, moves);
         }
 
+        if (piece.getPieceType() == PieceType.KNIGHT) {
+            knightMoves(board, myPosition, row, col, myColor, moves);
+        }
+
         return moves;
     }
 
@@ -78,7 +82,29 @@ public class ChessPiece {
             int targetRow = row + dir[0];
             int targetCol = col + dir[1];
 
-            if (targetRow < 0 || targetRow > 7 || targetCol < 0 || targetCol > 7) {
+            if (targetRow < 1 || targetRow > 8 || targetCol < 1 || targetCol > 8) {
+                continue;
+            }
+
+            ChessPosition targetPosition = new ChessPosition(targetRow, targetCol);
+            ChessPiece newPiece = board.getPiece(targetPosition);
+
+            if (newPiece == null || newPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, targetPosition, null));
+            }
+        }
+    }
+
+    private void knightMoves (ChessBoard board, ChessPosition myPosition, int row, int col, ChessGame.TeamColor myColor, List<ChessMove> moves) {
+        int[][] directions = {
+                {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {-1, 2}, {1, -2}, {-1, -2}
+        };
+
+        for (int[] dir : directions) {
+            int targetRow = row + dir[0];
+            int targetCol = col + dir[1];
+
+            if (targetRow < 1 || targetRow > 8 || targetCol < 1 || targetCol > 8) {
                 continue;
             }
 
