@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -54,12 +55,40 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        List<ChessMove> moves = new ArrayList<>();
+
         ChessPiece piece = board.getPiece(myPosition);
-        if (piece.getPieceType() == PieceType.BISHOP) {
-            // Decompose this problem to get the actual row and column wi
-            return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8), null));
+        ChessGame.TeamColor myColor = piece.getTeamColor();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        if (piece.getPieceType() == PieceType.KING) {
+            kingMoves(board, myPosition, row, col, myColor, moves);
         }
-        return List.of();
+
+        return moves;
+    }
+
+    private void kingMoves (ChessBoard board, ChessPosition myPosition, int row, int col, ChessGame.TeamColor myColor, List<ChessMove> moves) {
+        int [][] directions = {
+                {1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {-1,1}, {1,-1}, {-1,-1}
+        };
+
+        for (int[] dir : directions) {
+            int targetRow = row + dir[0];
+            int targetCol = col + dir[1];
+
+            if (targetRow < 0 || targetRow > 7 || targetCol < 0 || targetCol > 7) {
+                continue;
+            }
+
+            ChessPosition targetPosition = new ChessPosition(targetRow, targetCol);
+            ChessPiece newPiece = board.getPiece(targetPosition);
+
+            if (newPiece == null || newPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, targetPosition, null));
+            }
+        }
     }
 
     // Generated from intelliJ
