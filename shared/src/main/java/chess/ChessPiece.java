@@ -241,12 +241,14 @@ public class ChessPiece {
         };
 
         int[][] forwardDirections = {
-                {2, 0}, {1, 0}
+                {1, 0}, {2, 0}
         };
 
         int initialRow = (myColor == ChessGame.TeamColor.WHITE) ? 2 : 7;
         int color = (myColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
+        int endRow = (myColor == ChessGame.TeamColor.WHITE) ? 8 : 1;
 
+        // For forwarding
         for (int[] f : forwardDirections) {
             if (f[0] == 2 && myPosition.getRow() != initialRow) {
                 continue;
@@ -264,13 +266,22 @@ public class ChessPiece {
             ChessPosition targetPosition = new ChessPosition(targetRow, targetCol);
             ChessPiece targetPiece = board.getPiece(targetPosition);
 
-            // Empty target or enemy, add move
             if (targetPiece != null) {
-               break;
+                break;
+            } else {
+                if (targetPosition.getRow() == endRow) {
+                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.KNIGHT));
+                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.ROOK));
+                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.BISHOP));
+                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.QUEEN));
+                } else {
+                    moves.add(new ChessMove(myPosition, targetPosition, null));
+                }
+
             }
-            moves.add(new ChessMove(myPosition, targetPosition, null));
         }
 
+        // For capturing
         for (int[] d : diagonalDirections) {
             int targetRow = myPosition.getRow() + d[0] * color;
             int targetCol = myPosition.getColumn() + d[1];
@@ -286,7 +297,14 @@ public class ChessPiece {
 
             // Empty target or enemy, add move
             if (targetPiece != null && targetPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, targetPosition, null));
+                if (targetPosition.getRow() == endRow) {
+                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.KNIGHT));
+                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.ROOK));
+                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.BISHOP));
+                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.QUEEN));
+                } else {
+                    moves.add(new ChessMove(myPosition, targetPosition, null));
+                }
             }
         }
     }
