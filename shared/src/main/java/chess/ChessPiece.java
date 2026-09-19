@@ -80,6 +80,10 @@ public class ChessPiece {
             queenMoves(board, myPosition, myColor, moves);
         }
 
+        if (piece.getPieceType() == PieceType.PAWN) {
+            pawnMoves(board, myPosition, myColor, moves);
+        }
+
         return moves;
     }
 
@@ -227,6 +231,62 @@ public class ChessPiece {
                 }
                 targetRow += dir[0];
                 targetCol += dir[1];
+            }
+        }
+    }
+
+    private void pawnMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves) {
+        int[][] diagonalDirections = {
+                {1, 1}, {1, -1}
+        };
+
+        int[][] forwardDirections = {
+                {2, 0}, {1, 0}
+        };
+
+        int initialRow = (myColor == ChessGame.TeamColor.WHITE) ? 2 : 7;
+        int color = (myColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
+
+        for (int[] f : forwardDirections) {
+            if (f[0] == 2 && myPosition.getRow() != initialRow) {
+                continue;
+            }
+
+            int targetRow = myPosition.getRow() + f[0] * color;
+            int targetCol = myPosition.getColumn() + f[1];
+
+            // Check if in-bounds
+            if (targetRow < 1 || targetRow > 8 || targetCol < 1 || targetCol > 8) {
+                continue;
+            }
+
+            // Get the position and piece
+            ChessPosition targetPosition = new ChessPosition(targetRow, targetCol);
+            ChessPiece targetPiece = board.getPiece(targetPosition);
+
+            // Empty target or enemy, add move
+            if (targetPiece != null) {
+               break;
+            }
+            moves.add(new ChessMove(myPosition, targetPosition, null));
+        }
+
+        for (int[] d : diagonalDirections) {
+            int targetRow = myPosition.getRow() + d[0] * color;
+            int targetCol = myPosition.getColumn() + d[1];
+
+            // Check if in-bounds
+            if (targetRow < 1 || targetRow > 8 || targetCol < 1 || targetCol > 8) {
+                continue;
+            }
+
+            // Get the position and piece
+            ChessPosition targetPosition = new ChessPosition(targetRow, targetCol);
+            ChessPiece targetPiece = board.getPiece(targetPosition);
+
+            // Empty target or enemy, add move
+            if (targetPiece != null && targetPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, targetPosition, null));
             }
         }
     }
