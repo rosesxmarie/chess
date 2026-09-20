@@ -58,47 +58,61 @@ public class ChessPiece {
         List<ChessMove> moves = new ArrayList<>();
 
         ChessPiece piece = board.getPiece(myPosition);
-        ChessGame.TeamColor myColor = piece.getTeamColor();
+        ChessGame.TeamColor myColor = getTeamColor();
 
         if (piece.getPieceType() == PieceType.KING) {
-            kingMoves(board, myPosition, myColor, moves);
+            int [][] directions = {
+                    {1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {-1,1}, {1,-1}, {-1,-1}
+            };
+            stepJumpMoves(board, myPosition, myColor, moves, directions);
         }
 
         if (piece.getPieceType() == PieceType.KNIGHT) {
-            knightMoves(board, myPosition, myColor, moves);
+            int[][] directions = {
+                    {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {-1, 2}, {1, -2}, {-1, -2}
+            };
+            stepJumpMoves(board, myPosition, myColor, moves, directions);
         }
 
         if (piece.getPieceType() == PieceType.ROOK) {
-            rookMoves(board, myPosition, myColor, moves);
+            int[][] directions = {
+                    {1, 0}, {-1, 0}, {0, 1}, {0, -1}
+            };
+            slidingMoves(board, myPosition, myColor, moves, directions);
         }
 
         if (piece.getPieceType() == PieceType.BISHOP) {
-            bishopMoves(board, myPosition, myColor, moves);
+            int[][] directions = {
+                    {1, -1}, {1, 1}, {-1, 1}, {-1, -1}
+            };
+            slidingMoves(board, myPosition, myColor, moves, directions);
         }
 
         if (piece.getPieceType() == PieceType.QUEEN) {
-            queenMoves(board, myPosition, myColor, moves);
+            int[][] directions = {
+                    {1, -1}, {1, 1}, {-1, 1}, {-1, -1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}
+            };
+            slidingMoves(board, myPosition, myColor, moves, directions);
         }
 
         if (piece.getPieceType() == PieceType.PAWN) {
             pawnMoves(board, myPosition, myColor, moves);
         }
-
         return moves;
     }
 
-    private void kingMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves) {
-        int [][] directions = {
-                {1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {-1,1}, {1,-1}, {-1,-1}
-        };
+    private boolean isInBounds (int targetRow, int targetCol) {
+        return (targetRow >= 1 && targetRow <= 8 && targetCol >= 1 && targetCol <= 8);
+    }
 
+    private void stepJumpMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves, int[][] directions) {
         // Try each possible directions
         for (int[] dir : directions) {
             int targetRow = myPosition.getRow() + dir[0];
             int targetCol = myPosition.getColumn() + dir[1];
 
             // Check if in-bounds
-            if (targetRow < 1 || targetRow > 8 || targetCol < 1 || targetCol > 8) {
+            if (!isInBounds(targetRow, targetCol)) {
                 continue;
             }
 
@@ -113,152 +127,46 @@ public class ChessPiece {
         }
     }
 
-    private void knightMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves) {
-        int[][] directions = {
-                {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {-1, 2}, {1, -2}, {-1, -2}
-        };
-
+    private void slidingMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves, int[][] directions) {
         // Try each possible directions
         for (int[] dir : directions) {
             int targetRow = myPosition.getRow() + dir[0];
             int targetCol = myPosition.getColumn() + dir[1];
 
             // Check if in-bounds
-            if (targetRow < 1 || targetRow > 8 || targetCol < 1 || targetCol > 8) {
+            while (isInBounds(targetRow, targetCol)) {
+                ChessPosition targetPosition = new ChessPosition(targetRow, targetCol);
+                ChessPiece targetPiece = board.getPiece(targetPosition);
+
+                if (targetPiece == null) {
+                    // Empty target? Keep moving
+                    moves.add(new ChessMove(myPosition, targetPosition, null));
+                } else {
+                    // Not empty? If it's an enemy, add move
+                    if (targetPiece.getTeamColor() != myColor) {
+                        moves.add(new ChessMove(myPosition, targetPosition, null));
+                    }
+                    // Empty or not, stop moving. This piece cannot jump over another piece
+                    break;
+                }
+                targetRow += dir[0];
+                targetCol += dir[1];
+            }
+        }
+    }
+
+
+    private void pawnForwardMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves, int[][] directions, int initialRow, int endRow, int direction) {
+        for (int[] dir : directions) {
+            if (dir[0] == 2 && myPosition.getRow() != initialRow) {
                 continue;
             }
 
-            // Get the position and piece
-            ChessPosition targetPosition = new ChessPosition(targetRow, targetCol);
-            ChessPiece targetPiece = board.getPiece(targetPosition);
-
-            // Empty target or enemy, add move
-            if (targetPiece == null || targetPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, targetPosition, null));
-            }
-        }
-    }
-
-    private void rookMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves) {
-        int[][] directions = {
-                {1, 0}, {-1, 0}, {0, 1}, {0, -1}
-        };
-
-        // Try each possible directions
-        for (int[] dir : directions) {
-            int targetRow = myPosition.getRow() + dir[0];
+            int targetRow = myPosition.getRow() + dir[0] * direction;
             int targetCol = myPosition.getColumn() + dir[1];
 
             // Check if in-bounds
-            while (targetRow >= 1 && targetRow <= 8 && targetCol >= 1 && targetCol <= 8) {
-                ChessPosition targetPosition = new ChessPosition(targetRow, targetCol);
-                ChessPiece targetPiece = board.getPiece(targetPosition);
-
-                if (targetPiece == null) {
-                    // Empty target? Keep moving
-                    moves.add(new ChessMove(myPosition, targetPosition, null));
-                } else {
-                    // Not empty? If it's an enemy, add move
-                    if (targetPiece.getTeamColor() != myColor) {
-                        moves.add(new ChessMove(myPosition, targetPosition, null));
-                    }
-                    // Empty or not, stop moving. This piece cannot jump over another piece
-                    break;
-                }
-                targetRow += dir[0];
-                targetCol += dir[1];
-            }
-        }
-    }
-
-    private void bishopMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves) {
-        int[][] directions = {
-                {1, -1}, {1, 1}, {-1, 1}, {-1, -1}
-        };
-
-        // Try each possible directions
-        for (int[] dir : directions) {
-            int targetRow = myPosition.getRow() + dir[0];
-            int targetCol = myPosition.getColumn() + dir[1];
-
-            // Check if in-bounds
-            while (targetRow >= 1 && targetRow <= 8 && targetCol >= 1 && targetCol <= 8) {
-                ChessPosition targetPosition = new ChessPosition(targetRow, targetCol);
-                ChessPiece targetPiece = board.getPiece(targetPosition);
-
-                if (targetPiece == null) {
-                    // Empty target? Keep moving
-                    moves.add(new ChessMove(myPosition, targetPosition, null));
-                } else {
-                    // Not empty? If it's an enemy, add move
-                    if (targetPiece.getTeamColor() != myColor) {
-                        moves.add(new ChessMove(myPosition, targetPosition, null));
-                    }
-                    // Empty or not, stop moving. This piece cannot jump over another piece
-                    break;
-                }
-                targetRow += dir[0];
-                targetCol += dir[1];
-            }
-        }
-    }
-
-    private void queenMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves) {
-        int[][] directions = {
-                {1, -1}, {1, 1}, {-1, 1}, {-1, -1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}
-        };
-
-        // Try each possible directions
-        for (int[] dir : directions) {
-            int targetRow = myPosition.getRow() + dir[0];
-            int targetCol = myPosition.getColumn() + dir[1];
-
-            // Check if in-bounds
-            while (targetRow >= 1 && targetRow <= 8 && targetCol >= 1 && targetCol <= 8) {
-                ChessPosition targetPosition = new ChessPosition(targetRow, targetCol);
-                ChessPiece targetPiece = board.getPiece(targetPosition);
-
-                if (targetPiece == null) {
-                    // Empty target? Keep moving
-                    moves.add(new ChessMove(myPosition, targetPosition, null));
-                } else {
-                    // Not empty? If it's an enemy, add move
-                    if (targetPiece.getTeamColor() != myColor) {
-                        moves.add(new ChessMove(myPosition, targetPosition, null));
-                    }
-                    // Empty or not, stop moving. This piece cannot jump over another piece
-                    break;
-                }
-                targetRow += dir[0];
-                targetCol += dir[1];
-            }
-        }
-    }
-
-    private void pawnMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves) {
-        int[][] diagonalDirections = {
-                {1, 1}, {1, -1}
-        };
-
-        int[][] forwardDirections = {
-                {1, 0}, {2, 0}
-        };
-
-        int initialRow = (myColor == ChessGame.TeamColor.WHITE) ? 2 : 7;
-        int color = (myColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
-        int endRow = (myColor == ChessGame.TeamColor.WHITE) ? 8 : 1;
-
-        // For forwarding
-        for (int[] f : forwardDirections) {
-            if (f[0] == 2 && myPosition.getRow() != initialRow) {
-                continue;
-            }
-
-            int targetRow = myPosition.getRow() + f[0] * color;
-            int targetCol = myPosition.getColumn() + f[1];
-
-            // Check if in-bounds
-            if (targetRow < 1 || targetRow > 8 || targetCol < 1 || targetCol > 8) {
+            if (!isInBounds(targetRow, targetCol)) {
                 continue;
             }
 
@@ -270,24 +178,23 @@ public class ChessPiece {
                 break;
             } else {
                 if (targetPosition.getRow() == endRow) {
-                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.KNIGHT));
-                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.ROOK));
-                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.BISHOP));
-                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.QUEEN));
+                    for (PieceType promotion : promotionPiece) {
+                        moves.add(new ChessMove(myPosition, targetPosition, promotion));
+                    }
                 } else {
                     moves.add(new ChessMove(myPosition, targetPosition, null));
                 }
-
             }
         }
+    }
 
-        // For capturing
-        for (int[] d : diagonalDirections) {
-            int targetRow = myPosition.getRow() + d[0] * color;
-            int targetCol = myPosition.getColumn() + d[1];
+    private void pawnCaptureMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves, int[][] directions, int initialRow, int endRow, int direction) {
+        for (int[] dir : directions) {
+            int targetRow = myPosition.getRow() + dir[0] * direction;
+            int targetCol = myPosition.getColumn() + dir[1];
 
             // Check if in-bounds
-            if (targetRow < 1 || targetRow > 8 || targetCol < 1 || targetCol > 8) {
+            if (!isInBounds(targetRow, targetCol)) {
                 continue;
             }
 
@@ -298,15 +205,38 @@ public class ChessPiece {
             // Empty target or enemy, add move
             if (targetPiece != null && targetPiece.getTeamColor() != myColor) {
                 if (targetPosition.getRow() == endRow) {
-                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.KNIGHT));
-                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.ROOK));
-                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.BISHOP));
-                    moves.add(new ChessMove(myPosition, targetPosition, PieceType.QUEEN));
+                    for (PieceType promotion : promotionPiece) {
+                        moves.add(new ChessMove(myPosition, targetPosition, promotion));
+                    }
                 } else {
                     moves.add(new ChessMove(myPosition, targetPosition, null));
                 }
             }
         }
+    }
+
+    private static final PieceType[] promotionPiece = {
+            PieceType.KNIGHT,
+            PieceType.ROOK,
+            PieceType.BISHOP,
+            PieceType.QUEEN
+    };
+
+    private void pawnMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves) {
+        int[][] diagonalDirections = {
+                {1, 1}, {1, -1}
+        };
+
+        int[][] forwardDirections = {
+                {1, 0}, {2, 0}
+        };
+
+        int initialRow = (myColor == ChessGame.TeamColor.WHITE) ? 2 : 7;
+        int direction = (myColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
+        int endRow = (myColor == ChessGame.TeamColor.WHITE) ? 8 : 1;
+
+        pawnForwardMoves(board, myPosition, myColor, moves, forwardDirections, initialRow, endRow, direction);
+        pawnCaptureMoves(board, myPosition, myColor, moves, diagonalDirections, initialRow, endRow, direction);
     }
 
     // Generated from intelliJ

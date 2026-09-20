@@ -35,7 +35,6 @@ public class ChessPosition {
     // This make it easier to read outputs
     @Override
     public String toString() {
-
         return String.format("[%d, %d]", row, col);
     }
 
