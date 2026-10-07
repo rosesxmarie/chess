@@ -117,7 +117,7 @@ public class ChessGame {
         setTeamTurn(getTeamTurn() == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE);
     }
 
-    private ChessPosition findKing(TeamColor teamColor) {
+    private ChessPosition findKingsPosition(TeamColor teamColor) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition currentPosition = new ChessPosition(row, col);
@@ -138,7 +138,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition kingPosition = findKing(teamColor);
+        ChessPosition kingPosition = findKingsPosition(teamColor);
 
         if (kingPosition == null) {
             return false;
@@ -147,10 +147,9 @@ public class ChessGame {
         // Check other teams pieces
         for (int row = 1; row <= 8; row ++) {
             for (int col = 1; col <= 8; col++) {
-                ChessPosition currentPosition = new ChessPosition(row, col);
-                ChessPiece piece = board.getPiece(currentPosition);
+                ChessPiece piece = board.getPiece(new ChessPosition(row, col));
                 if (piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, currentPosition);
+                    Collection<ChessMove> moves = piece.pieceMoves(board, new ChessPosition(row, col));
                     for (ChessMove move : moves) {
                         if (move.getEndPosition().equals(kingPosition)) {
                             return true;
@@ -165,10 +164,9 @@ public class ChessGame {
     private boolean hasValidMoves(TeamColor teamColor) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
-                ChessPosition currentPosition = new ChessPosition(row, col);
-                ChessPiece piece = board.getPiece(currentPosition);
+                ChessPiece piece = board.getPiece(new ChessPosition(row, col));
                 if (piece != null && piece.getTeamColor() == teamColor) {
-                    if (!validMoves(currentPosition).isEmpty()) {
+                    if (!validMoves(new ChessPosition(row, col)).isEmpty()) {
                         return true;
                     }
                 }
