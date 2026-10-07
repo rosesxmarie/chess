@@ -52,7 +52,7 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) throws CloneNotSupportedException{
+    public Collection<ChessMove> validMoves(ChessPosition startPosition) throws CloneNotSupportedException {
         ChessPiece piece = board.getPiece(startPosition);
 
         if (piece == null) {
@@ -64,11 +64,10 @@ public class ChessGame {
         for (ChessMove move : possibleMoves) {
             ChessBoard testBoard = (ChessBoard) board.clone();
 
-
-
+            if (!isInCheck(piece.getTeamColor())) {
+                validMoves.add(move);
+            }
         }
-
-
         return possibleMoves;
     }
 
@@ -89,7 +88,43 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // Find the King
+        ChessPosition kingPosition = null;
+        for (int row = 1; row <= 8; row ++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition currentPosition = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(currentPosition);
+
+                if (piece != null && piece.getTeamColor() == teamColor && piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    kingPosition = currentPosition;
+                    break;
+                }
+            }
+            if (kingPosition != null) {
+                break;
+            }
+        }
+
+        if (kingPosition == null) {
+            return false;
+        }
+
+        // Check other teams pieces
+        for (int row = 1; row <= 8; row ++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition currentPosition = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(currentPosition);
+                if (piece != null && piece.getTeamColor() != teamColor) {
+                    Collection<ChessMove> moves = piece.pieceMoves(board, currentPosition));
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
