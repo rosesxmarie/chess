@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A class that can manage a chess game, making moves on a board
@@ -9,16 +11,21 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    private TeamColor turn;
+    private ChessBoard board;
+
 
     public ChessGame() {
-
-    }
+            this.turn = TeamColor.WHITE;
+            this.board = new ChessBoard();
+            this.board.resetBoard();
+        }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return turn;
     }
 
     /**
@@ -27,7 +34,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        this.turn = team;
     }
 
     /**
@@ -45,8 +52,24 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+    public Collection<ChessMove> validMoves(ChessPosition startPosition) throws CloneNotSupportedException{
+        ChessPiece piece = board.getPiece(startPosition);
+
+        if (piece == null) {
+            return null;
+        }
+
+        Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
+        List<ChessMove> validMoves = new ArrayList<>();
+        for (ChessMove move : possibleMoves) {
+            ChessBoard testBoard = (ChessBoard) board.clone();
+
+
+
+        }
+
+
+        return possibleMoves;
     }
 
     /**
@@ -96,7 +119,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -105,6 +128,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
     }
 }
