@@ -52,8 +52,9 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) throws CloneNotSupportedException {
+    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
+        ChessBoard realBoard = board;
 
         if (piece == null) {
             return null;
@@ -61,14 +62,22 @@ public class ChessGame {
 
         Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
         List<ChessMove> validMoves = new ArrayList<>();
+
         for (ChessMove move : possibleMoves) {
-            ChessBoard testBoard = (ChessBoard) board.clone();
+            ChessBoard testBoard = realBoard.clone();
+            board = testBoard;
+
+            ChessPiece movingPiece = testBoard.getPiece(move.getStartPosition());
+            testBoard.addPiece(move.getStartPosition(), null);
+            testBoard.addPiece(move.getEndPosition(), movingPiece);
 
             if (!isInCheck(piece.getTeamColor())) {
                 validMoves.add(move);
             }
+
+            board = realBoard;
         }
-        return possibleMoves;
+        return validMoves;
     }
 
     /**
@@ -115,7 +124,7 @@ public class ChessGame {
                 ChessPosition currentPosition = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(currentPosition);
                 if (piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, currentPosition));
+                    Collection<ChessMove> moves = piece.pieceMoves(board, currentPosition);
                     for (ChessMove move : moves) {
                         if (move.getEndPosition().equals(kingPosition)) {
                             return true;

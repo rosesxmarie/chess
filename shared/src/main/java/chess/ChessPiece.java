@@ -253,7 +253,11 @@ public class ChessPiece implements Cloneable {
     }
 
     @Override
-    public ChessPiece clone() throws CloneNotSupportedException {
-        return (ChessPiece) super.clone();
+    public ChessPiece clone() {
+        try {
+            return (ChessPiece) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
+        }
     }
 }

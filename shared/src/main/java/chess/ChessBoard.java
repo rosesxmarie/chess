@@ -92,19 +92,23 @@ public class ChessBoard implements Cloneable {
     }
 
     @Override
-    public ChessBoard clone() throws CloneNotSupportedException {
-        ChessBoard boardClone = (ChessBoard) super.clone();
-        boardClone.squares = new ChessPiece[8][8];
+    public ChessBoard clone() {
+        try {
+            ChessBoard boardClone = (ChessBoard) super.clone();
+            boardClone.squares = new ChessPiece[8][8];
 
-        for (int row = 0; row < 8; row ++) {
-            for (int col = 0; col < 8; col++) {
-                if (this.squares[row][col] != null) {
-                    boardClone.squares[row][col] = this.squares[row][col].clone();
-                } else {
-                    boardClone.squares[row][col] = null;
+            for (int row = 0; row < 8; row++) {
+                for (int col = 0; col < 8; col++) {
+                    if (this.squares[row][col] != null) {
+                        boardClone.squares[row][col] = this.squares[row][col].clone();
+                    } else {
+                        boardClone.squares[row][col] = null;
+                    }
                 }
             }
+            return boardClone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
         }
-        return boardClone;
     }
 }
