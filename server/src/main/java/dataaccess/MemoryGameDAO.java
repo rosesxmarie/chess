@@ -5,7 +5,7 @@ import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MemoryGameDAO implements UserDAO {
+public class MemoryGameDAO implements GameDAO {
     private ArrayList<GameData> games = new ArrayList<>();
 
 
