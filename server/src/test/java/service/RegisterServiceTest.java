@@ -1,8 +1,8 @@
 package service;
 
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import model.UserData;
+import model.AuthData;
 import org.junit.jupiter.api.Test;
 import service.RegisterService;
 
@@ -12,14 +12,30 @@ import static org.junit.jupiter.api.Assertions.*;
 class RegisterServiceTest {
 
     @Test
-    void registerUser() throws Exception {
-        var service = new RegisterService(new MemoryUserDAO(), new MemoryAuthDAO());
-        var registerRequest = new UserData("test", "test123", "test@byu.edu");
-        var registerResult = service.registerUser(registerRequest);
+    void registerUser() throws DataAccessException {
+        RegisterService service = new RegisterService(new MemoryUserDAO(), new MemoryAuthDAO());
+        RegisterRequest registerRequest = new RegisterRequest("test", "test123", "test@byu.edu");
+        AuthData registerResult = service.registerUser(registerRequest);
 
-        assertEquals("test",  registerRequest.username());
+        assertEquals("test",  registerResult.username());
         assertNotNull(registerResult.authToken());
-        // Test for already taken user
-        assertThrows(Exception.class, () -> service.registerUser(new UserData("test", "test123", "test@byu.edu")));
+    }
+
+    @Test
+    void alreadyTaken() throws DataAccessException {
+        RegisterService service = new RegisterService(new MemoryUserDAO(), new MemoryAuthDAO());
+        RegisterRequest registerRequest = new RegisterRequest("test", "test123", "test@byu.edu");
+        service.registerUser(registerRequest);
+
+        assertThrows(DataAccessException.class, () -> service.registerUser(new RegisterRequest("test", "test123", "test@byu.edu")));
+
+    }
+
+    @Test
+    void BadRequest() throws DataAccessException{
+        RegisterService service = new RegisterService(new MemoryUserDAO(), new MemoryAuthDAO());
+        RegisterRequest badRequest = new RegisterRequest(null, "test123", "test@byu.edu");
+
+        assertThrows(DataAccessException.class, () -> service.registerUser(badRequest));
     }
 }
