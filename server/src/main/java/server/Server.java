@@ -12,6 +12,7 @@ public class Server {
     private final RegisterHandler registerHandler;
     private final ClearApplicationHandler clearApplicationHandler;
     private final LoginHandler loginHandler;
+    private final LogoutHandler logoutHandler;
 
 
     public Server() {
@@ -27,11 +28,14 @@ public class Server {
                 new ClearService(userDAO, authDAO,gameDAO));
         loginHandler = new LoginHandler(
                 new LoginService(userDAO, authDAO));
+        logoutHandler = new LogoutHandler(
+                new LogoutService(authDAO));
 
 
         javalin.post("/user", ctx -> ctx.result(registerHandler.register(ctx.body())));
         javalin.delete("/db", clearApplicationHandler::clear);
         javalin.post("/session", ctx -> ctx.result(loginHandler.register(ctx.body())));
+        javalin.delete("/session", ctx -> logoutHandler.logoutUser(ctx));
 
         javalin.exception(AlreadyTakenException.class, (e, ctx) -> {
             ctx.status(403);
