@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import dataaccess.*;
 
 class ClearServiceTest {
-    static final UserDAO userDAO = new MemoryUserDAO();
-    static final AuthDAO authDAO = new MemoryAuthDAO();
-    static final GameDAO gameDAO = new MemoryGameDAO();
+    private final UserDAO userDAO = new MemoryUserDAO();
+    private final AuthDAO authDAO = new MemoryAuthDAO();
+    private final GameDAO gameDAO = new MemoryGameDAO();
 
     @Test
     void clearApplication() throws DataAccessException {

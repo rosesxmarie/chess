@@ -18,6 +18,7 @@ public class RegisterService {
     }
 
     public AuthData registerUser(RegisterRequest registerRequest) throws DataAccessException {
+
         if (registerRequest.username() == null || registerRequest.password() == null || registerRequest.email() == null) {
             throw new BadRequestException();
         }
