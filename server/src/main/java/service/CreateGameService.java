@@ -1,5 +1,6 @@
 package service;
 
+import RequestResult.CreateGameRequest;
 import chess.ChessGame;
 import dataaccess.*;
 import model.AuthData;

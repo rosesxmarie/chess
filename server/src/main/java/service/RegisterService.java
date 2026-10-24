@@ -1,5 +1,6 @@
 package service;
 
+import RequestResult.RegisterRequest;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import dataaccess.AuthDAO;

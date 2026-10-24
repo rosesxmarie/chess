@@ -1,9 +1,8 @@
 package handler;
 
-import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import io.javalin.http.Context;
-import service.LogoutRequest;
+import RequestResult.LogoutRequest;
 
 import service.LogoutService;
 

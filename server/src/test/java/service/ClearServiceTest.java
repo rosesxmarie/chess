@@ -1,11 +1,11 @@
 package service;
 
+import RequestResult.RegisterRequest;
 import dataaccess.*;
 import model.AuthData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import dataaccess.*;
 
 class ClearServiceTest {
     private final UserDAO userDAO = new MemoryUserDAO();

@@ -3,7 +3,7 @@ package handler;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import service.LoginService;
-import service.LoginRequest;
+import RequestResult.LoginRequest;
 
 public class LoginHandler {
     private final LoginService loginService;

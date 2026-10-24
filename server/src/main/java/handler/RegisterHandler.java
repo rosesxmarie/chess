@@ -1,7 +1,7 @@
 package handler;
 
 import dataaccess.DataAccessException;
-import service.RegisterRequest;
+import RequestResult.RegisterRequest;
 import service.RegisterService;
 import com.google.gson.Gson;
 

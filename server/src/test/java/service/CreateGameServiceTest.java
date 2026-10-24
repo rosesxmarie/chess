@@ -1,5 +1,7 @@
 package service;
 
+import RequestResult.CreateGameRequest;
+import RequestResult.RegisterRequest;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
