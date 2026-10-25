@@ -1,6 +1,7 @@
 package service;
 
 import RequestResult.ListGamesRequest;
+import RequestResult.ListGamesResult;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
@@ -19,13 +20,13 @@ public class ListGamesService {
         this.gameDAO = gameDAO;
     }
 
-    public ArrayList<GameData> listGames(ListGamesRequest listGamesRequest) throws DataAccessException {
+    public ListGamesResult listGames(ListGamesRequest listGamesRequest) throws DataAccessException {
         AuthData authData = authDAO.getAuth(listGamesRequest.authToken());
 
         if (authData == null) {
             throw new UnauthorizedException();
         }
 
-        return gameDAO.listGames();
+        return new ListGamesResult(gameDAO.listGames());
     }
 }

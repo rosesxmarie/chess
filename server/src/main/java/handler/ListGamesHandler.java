@@ -1,5 +1,8 @@
 package handler;
 
+import RequestResult.ListGamesResult;
+import RequestResult.LoginRequest;
+import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import io.javalin.http.Context;
 import RequestResult.ListGamesRequest;
@@ -12,9 +15,10 @@ public class ListGamesHandler {
         this.listGamesService = listGamesService;
     }
 
-    public void listGames(Context ctx) throws DataAccessException {
-        var listGamesRequest = new ListGamesRequest(ctx.header("authorization"));
-        listGamesService.listGames(listGamesRequest);
-        ctx.result("{}");
+    public String listGames(String authToken) throws DataAccessException {
+        var serializer = new Gson();
+        var listGamesRequest = new ListGamesRequest(authToken);
+        var listGamesResult = listGamesService.listGames(listGamesRequest);
+        return serializer.toJson(listGamesResult);
     }
 }
