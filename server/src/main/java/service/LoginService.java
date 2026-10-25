@@ -6,6 +6,7 @@ import model.UserData;
 
 import java.util.Objects;
 import java.util.UUID;
+import RequestResult.*;
 
 public class LoginService {
     private final UserDAO userDAO;
@@ -16,7 +17,7 @@ public class LoginService {
         this.authDAO = authDAO;
     }
 
-    public AuthData loginUser(LoginRequest loginRequest) throws DataAccessException {
+    public LoginResult loginUser(LoginRequest loginRequest) throws DataAccessException {
         UserData userData = userDAO.getUser(loginRequest.username());
 
         if (loginRequest.username() == null || loginRequest.password() == null) {
@@ -31,12 +32,8 @@ public class LoginService {
             throw new UnauthorizedException();
         }
 
-
-        userDAO.getUser(loginRequest.username());
         String authToken = UUID.randomUUID().toString();
-        AuthData authData = new AuthData(authToken, loginRequest.username());
-        authDAO.createAuth(authData);
-
-        return authData;
+        authDAO.createAuth(new AuthData(authToken, loginRequest.username()));
+        return new LoginResult(loginRequest.username(), authToken);
     }
 }

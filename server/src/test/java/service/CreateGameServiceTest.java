@@ -28,7 +28,6 @@ class CreateGameServiceTest {
 
         assertNotNull(gameDAO.getGame(createGameResult.gameID()));
 
-
     }
 
     @Test

@@ -1,6 +1,7 @@
 package service;
 
 import RequestResult.CreateGameRequest;
+import RequestResult.CreateGameResult;
 import chess.ChessGame;
 import dataaccess.*;
 import model.AuthData;
@@ -17,7 +18,7 @@ public class CreateGameService {
         this.gameDAO = gameDAO;
     }
 
-    public GameData createGame(CreateGameRequest createGameRequest) throws DataAccessException {
+    public CreateGameResult createGame(CreateGameRequest createGameRequest) throws DataAccessException {
         AuthData authData = authDAO.getAuth(createGameRequest.authToken());
 
         if (authData == null) {
@@ -32,7 +33,6 @@ public class CreateGameService {
         GameData gameData = new GameData(gameID, null, null, createGameRequest.gameName(), new ChessGame());
         gameDAO.createGame(gameData);
 
-
-        return gameData;
+        return new CreateGameResult(gameID);
     }
 }

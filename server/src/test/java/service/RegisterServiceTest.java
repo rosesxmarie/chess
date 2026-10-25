@@ -25,7 +25,7 @@ class RegisterServiceTest {
         RegisterRequest registerRequest = new RegisterRequest("test", "test123", "test@byu.edu");
         service.registerUser(registerRequest);
 
-        assertThrows(DataAccessException.class, () -> service.registerUser(new RegisterRequest("test", "test123", "test@byu.edu")));
+        assertThrows(DataAccessException.class, () -> service.registerUser(registerRequest));
 
     }
 

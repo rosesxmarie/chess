@@ -39,7 +39,7 @@ public class Server {
 
         javalin.post("/user", ctx -> ctx.result(registerHandler.register(ctx.body())));
         javalin.delete("/db", clearApplicationHandler::clear);
-        javalin.post("/session", ctx -> ctx.result(loginHandler.register(ctx.body())));
+        javalin.post("/session", ctx -> ctx.result(loginHandler.login(ctx.body())));
         javalin.delete("/session", ctx -> logoutHandler.logoutUser(ctx));
         javalin.post("/game", ctx -> ctx.result(createGameHandler.createGame(ctx.header("authorization"), ctx.body())));
         javalin.get("/game", ctx -> listGamesHandler.listGames(ctx));
