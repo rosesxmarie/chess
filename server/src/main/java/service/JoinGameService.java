@@ -1,9 +1,7 @@
 package service;
 
-import RequestResult.CreateGameResult;
-import RequestResult.JoinGameRequest;
-import RequestResult.JoinGameResult;
-import chess.ChessGame;
+import requestresult.JoinGameRequest;
+import requestresult.JoinGameResult;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;

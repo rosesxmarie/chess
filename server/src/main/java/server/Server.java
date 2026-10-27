@@ -1,6 +1,5 @@
 package server;
 
-import RequestResult.JoinGameResult;
 import io.javalin.*;
 import dataaccess.*;
 import handler.*;

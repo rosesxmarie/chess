@@ -1,8 +1,7 @@
 package service;
 
-import RequestResult.LoginResult;
-import RequestResult.LogoutRequest;
-import RequestResult.LogoutResult;
+import requestresult.LogoutRequest;
+import requestresult.LogoutResult;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;

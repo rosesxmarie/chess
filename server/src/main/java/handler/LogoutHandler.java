@@ -1,12 +1,8 @@
 package handler;
 
-import RequestResult.CreateGameRequest;
-import RequestResult.ListGamesRequest;
-import RequestResult.LoginRequest;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import io.javalin.http.Context;
-import RequestResult.LogoutRequest;
+import requestresult.LogoutRequest;
 
 import service.LogoutService;
 

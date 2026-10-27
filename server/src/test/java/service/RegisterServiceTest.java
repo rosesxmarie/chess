@@ -1,9 +1,8 @@
 package service;
 
-import RequestResult.RegisterRequest;
-import RequestResult.RegisterResult;
+import requestresult.RegisterRequest;
+import requestresult.RegisterResult;
 import dataaccess.*;
-import model.AuthData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +29,7 @@ class RegisterServiceTest {
     }
 
     @Test
-    void BadRequest() throws DataAccessException{
+    void badRequest() throws DataAccessException{
         RegisterService service = new RegisterService(new MemoryUserDAO(), new MemoryAuthDAO());
         RegisterRequest badRequest = new RegisterRequest(null, "test123", "test@byu.edu");
 

@@ -1,12 +1,9 @@
 package handler;
 
-import RequestResult.JoinGameRequest;
-import RequestResult.ListGamesRequest;
-import RequestResult.LoginRequest;
+import requestresult.JoinGameRequest;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import service.JoinGameService;
-import service.ListGamesService;
 
 public class JoinGameHandler {
     private final JoinGameService joinGameService;

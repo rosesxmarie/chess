@@ -6,7 +6,7 @@ import model.UserData;
 
 import java.util.Objects;
 import java.util.UUID;
-import RequestResult.*;
+import requestresult.*;
 
 public class LoginService {
     private final UserDAO userDAO;

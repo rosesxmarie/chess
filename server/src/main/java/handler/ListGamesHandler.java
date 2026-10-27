@@ -1,11 +1,8 @@
 package handler;
 
-import RequestResult.ListGamesResult;
-import RequestResult.LoginRequest;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import io.javalin.http.Context;
-import RequestResult.ListGamesRequest;
+import requestresult.ListGamesRequest;
 import service.ListGamesService;
 
 public class ListGamesHandler {

@@ -2,7 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import RequestResult.CreateGameRequest;
+import requestresult.CreateGameRequest;
 import service.CreateGameService;
 
 public class CreateGameHandler {

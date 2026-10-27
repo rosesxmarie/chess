@@ -1,11 +1,10 @@
 package service;
 
-import RequestResult.ClearRequest;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
-import RequestResult.ClearResult;
+import requestresult.ClearResult;
 
 public class ClearService {
     private final UserDAO userDAO;

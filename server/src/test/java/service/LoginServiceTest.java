@@ -1,8 +1,8 @@
 package service;
 
-import RequestResult.LoginRequest;
-import RequestResult.LoginResult;
-import RequestResult.RegisterRequest;
+import requestresult.LoginRequest;
+import requestresult.LoginResult;
+import requestresult.RegisterRequest;
 import dataaccess.*;
 import org.junit.jupiter.api.Test;
 

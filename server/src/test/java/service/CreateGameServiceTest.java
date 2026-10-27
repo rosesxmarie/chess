@@ -1,12 +1,10 @@
 package service;
 
-import RequestResult.CreateGameRequest;
-import RequestResult.CreateGameResult;
-import RequestResult.RegisterRequest;
-import RequestResult.RegisterResult;
+import requestresult.CreateGameRequest;
+import requestresult.CreateGameResult;
+import requestresult.RegisterRequest;
+import requestresult.RegisterResult;
 import dataaccess.*;
-import model.AuthData;
-import model.GameData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

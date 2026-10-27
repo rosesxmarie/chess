@@ -1,10 +1,8 @@
 package service;
 
-import RequestResult.*;
+import requestresult.*;
 import dataaccess.*;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ListGamesServiceTest {
     UserDAO userDAO = new MemoryUserDAO();
@@ -24,6 +22,9 @@ class ListGamesServiceTest {
 
         CreateGameRequest createGameRequest1 = new CreateGameRequest(authToken, "gameName2");
         createGameService.createGame(createGameRequest1);
+
+        CreateGameRequest createGameRequest2 = new CreateGameRequest(authToken, "gameName3");
+        createGameService.createGame(createGameRequest2);
 
         ListGamesService listGamesService = new ListGamesService(authDAO, gameDAO);
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);

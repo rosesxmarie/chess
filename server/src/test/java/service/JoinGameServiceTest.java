@@ -1,6 +1,6 @@
 package service;
 
-import RequestResult.*;
+import requestresult.*;
 import dataaccess.*;
 import org.junit.jupiter.api.Test;
 

@@ -1,11 +1,10 @@
 package service;
 
-import RequestResult.LoginRequest;
-import RequestResult.LoginResult;
-import RequestResult.LogoutRequest;
-import RequestResult.RegisterRequest;
+import requestresult.LoginRequest;
+import requestresult.LoginResult;
+import requestresult.LogoutRequest;
+import requestresult.RegisterRequest;
 import dataaccess.*;
-import model.AuthData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

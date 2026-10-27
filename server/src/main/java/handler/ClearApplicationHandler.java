@@ -1,13 +1,7 @@
 package handler;
-import RequestResult.ClearRequest;
-import RequestResult.LogoutRequest;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import io.javalin.http.Context;
-
 import service.ClearService;
-import io.javalin.http.Context;
-
 
 
 public class ClearApplicationHandler {
