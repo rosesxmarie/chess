@@ -68,20 +68,24 @@ public class ChessBoard implements Cloneable {
         // WHITE Pieces
         for (int col = 0; col < 8; col++) {
             addPiece(new ChessPosition(1,col +1), new ChessPiece(ChessGame.TeamColor.WHITE, backRanks[col]));
-            addPiece(new ChessPosition(2,col +1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+            addPiece(new ChessPosition(2,col +1), new ChessPiece(ChessGame.TeamColor.WHITE,
+                    ChessPiece.PieceType.PAWN));
         }
 
         // BLACK Pieces
         for (int col = 0; col < 8; col++) {
             addPiece(new ChessPosition(8,col +1), new ChessPiece(ChessGame.TeamColor.BLACK, backRanks[col]));
-            addPiece(new ChessPosition(7,col +1), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+            addPiece(new ChessPosition(7,col +1), new ChessPiece(ChessGame.TeamColor.BLACK,
+                    ChessPiece.PieceType.PAWN));
         }
     }
 
     // Generated from intelliJ
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ChessBoard that = (ChessBoard) o;
         return Objects.deepEquals(squares, that.squares);
     }

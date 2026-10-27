@@ -33,16 +33,15 @@ class CreateGameServiceTest {
     @Test
     void badRequest() throws DataAccessException{
         CreateGameService createGameService = new CreateGameService(authDAO, gameDAO);
-        CreateGameRequest BadRequest = new CreateGameRequest(null, "gameName");
+        CreateGameRequest badRequest = new CreateGameRequest(null, "gameName");
 
-        assertThrows(DataAccessException.class, () -> createGameService.createGame(BadRequest));
+        assertThrows(DataAccessException.class, () -> createGameService.createGame(badRequest));
     }
 
     @Test
     void unauthorized() throws DataAccessException{
         CreateGameService createGameService = new CreateGameService(authDAO, gameDAO);
         CreateGameRequest unauthorizedRequest = new CreateGameRequest("fakeToken", "gameName");
-
 
         assertThrows(UnauthorizedException.class, () -> createGameService.createGame(unauthorizedRequest));
     }

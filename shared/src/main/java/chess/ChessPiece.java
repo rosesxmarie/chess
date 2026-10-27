@@ -156,7 +156,9 @@ public class ChessPiece implements Cloneable {
     }
 
 
-    private void pawnForwardMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves, int[][] directions, int initialRow, int endRow, int direction) {
+    private void pawnForwardMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor,
+                                   List<ChessMove> moves, int[][] directions, int initialRow,
+                                   int endRow, int direction) {
         for (int[] dir : directions) {
             if (dir[0] == 2 && myPosition.getRow() != initialRow) {
                 continue;
@@ -177,18 +179,24 @@ public class ChessPiece implements Cloneable {
             if (targetPiece != null) {
                 break;
             } else {
-                if (targetPosition.getRow() == endRow) {
-                    for (PieceType promotion : promotionPiece) {
-                        moves.add(new ChessMove(myPosition, targetPosition, promotion));
-                    }
-                } else {
-                    moves.add(new ChessMove(myPosition, targetPosition, null));
-                }
+                addPawn(moves, myPosition, targetPosition, endRow);
             }
         }
     }
 
-    private void pawnCaptureMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor, List<ChessMove> moves, int[][] directions, int initialRow, int endRow, int direction) {
+    private void addPawn(List<ChessMove> moves, ChessPosition myPosition, ChessPosition targetPosition, int endRow) {
+        if (targetPosition.getRow() == endRow) {
+            for (PieceType promotion : PROMOTION_PIECES) {
+                moves.add(new ChessMove(myPosition, targetPosition, promotion));
+            }
+        } else {
+            moves.add(new ChessMove(myPosition, targetPosition, null));
+        }
+    }
+
+    private void pawnCaptureMoves (ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor,
+                                   List<ChessMove> moves, int[][] directions, int initialRow, int endRow,
+                                   int direction) {
         for (int[] dir : directions) {
             int targetRow = myPosition.getRow() + dir[0] * direction;
             int targetCol = myPosition.getColumn() + dir[1];
@@ -204,18 +212,12 @@ public class ChessPiece implements Cloneable {
 
             // Empty target or enemy, add move
             if (targetPiece != null && targetPiece.getTeamColor() != myColor) {
-                if (targetPosition.getRow() == endRow) {
-                    for (PieceType promotion : promotionPiece) {
-                        moves.add(new ChessMove(myPosition, targetPosition, promotion));
-                    }
-                } else {
-                    moves.add(new ChessMove(myPosition, targetPosition, null));
-                }
+               addPawn(moves, myPosition, targetPosition, endRow);
             }
         }
     }
 
-    private static final PieceType[] promotionPiece = {
+    private static final PieceType[] PROMOTION_PIECES = {
             PieceType.KNIGHT,
             PieceType.ROOK,
             PieceType.BISHOP,
@@ -242,7 +244,9 @@ public class ChessPiece implements Cloneable {
     // Generated from intelliJ
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ChessPiece that = (ChessPiece) o;
         return pieceColor == that.pieceColor && type == that.type;
     }

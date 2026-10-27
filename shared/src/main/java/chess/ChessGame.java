@@ -131,6 +131,17 @@ public class ChessGame {
         return null;
     }
 
+    private boolean canCapture(ChessBoard board, ChessPosition piecePosition, ChessPosition targetPosition) {
+        ChessPiece piece = board.getPiece(piecePosition);
+        Collection<ChessMove> moves = piece.pieceMoves(board, piecePosition);
+        for (ChessMove move : moves) {
+            if (move.getEndPosition().equals(targetPosition)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Determines if the given team is in check
      *
@@ -148,20 +159,15 @@ public class ChessGame {
         for (int row = 1; row <= 8; row ++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(row, col));
-                if (piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, new ChessPosition(row, col));
-                    for (ChessMove move : moves) {
-                        if (move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
-                    }
+                if (piece != null && piece.getTeamColor() != teamColor && canCapture(board, new ChessPosition(row, col), kingPosition)) {
+                    return true;
                 }
             }
         }
         return false;
     }
 
-    private boolean hasValidMoves(TeamColor teamColor) {
+    private boolean hasValidMoves(ChessGame.TeamColor teamColor) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(row, col));
