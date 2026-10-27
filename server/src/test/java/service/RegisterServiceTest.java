@@ -1,6 +1,7 @@
 package service;
 
 import RequestResult.RegisterRequest;
+import RequestResult.RegisterResult;
 import dataaccess.*;
 import model.AuthData;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ class RegisterServiceTest {
     void registerUser() throws DataAccessException {
         RegisterService service = new RegisterService(new MemoryUserDAO(), new MemoryAuthDAO());
         RegisterRequest registerRequest = new RegisterRequest("test", "test123", "test@byu.edu");
-        AuthData registerResult = service.registerUser(registerRequest);
+        RegisterResult registerResult = service.registerUser(registerRequest);
 
         assertEquals("test",  registerResult.username());
         assertNotNull(registerResult.authToken());
@@ -26,7 +27,6 @@ class RegisterServiceTest {
         service.registerUser(registerRequest);
 
         assertThrows(DataAccessException.class, () -> service.registerUser(registerRequest));
-
     }
 
     @Test

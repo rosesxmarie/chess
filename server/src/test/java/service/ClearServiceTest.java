@@ -17,7 +17,7 @@ class ClearServiceTest {
     void clearApplication() throws DataAccessException {
         RegisterService registerService = new RegisterService(userDAO, authDAO);
         RegisterRequest registerRequest = new RegisterRequest("test", "test123", "test@byu.edu");
-        AuthData registerResult = registerService.registerUser(registerRequest);
+        RegisterResult registerResult = registerService.registerUser(registerRequest);
 
         ClearService clearService =  new ClearService(userDAO, authDAO, gameDAO);
 

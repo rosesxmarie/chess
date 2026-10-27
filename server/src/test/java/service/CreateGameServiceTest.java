@@ -1,7 +1,9 @@
 package service;
 
 import RequestResult.CreateGameRequest;
+import RequestResult.CreateGameResult;
 import RequestResult.RegisterRequest;
+import RequestResult.RegisterResult;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
@@ -19,12 +21,12 @@ class CreateGameServiceTest {
 
         RegisterService registerService = new RegisterService(userDAO, authDAO);
         RegisterRequest registerRequest = new RegisterRequest("test", "test123", "test@byu.edu");
-        AuthData registerResult = registerService.registerUser(registerRequest);
+        RegisterResult registerResult = registerService.registerUser(registerRequest);
         String authToken = registerResult.authToken();
 
         CreateGameService createGameService = new CreateGameService(authDAO, gameDAO);
         CreateGameRequest createGameRequest = new CreateGameRequest(authToken, "gameName");
-        GameData createGameResult = createGameService.createGame(createGameRequest);
+        CreateGameResult createGameResult = createGameService.createGame(createGameRequest);
 
         assertNotNull(gameDAO.getGame(createGameResult.gameID()));
 

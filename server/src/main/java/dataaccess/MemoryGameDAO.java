@@ -30,9 +30,9 @@ public class MemoryGameDAO implements GameDAO {
         return new ArrayList<>(games);
     }
 
-    int gameIndex = 0;
 
     public GameData updateGame(int gameID, GameData newGameData) throws DataAccessException {
+        int gameIndex = 0;
         for (GameData game : games) {
             if (game.gameID() == gameID) {
                 games.set(gameIndex, newGameData);

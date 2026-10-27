@@ -12,9 +12,9 @@ public class LoginHandler {
         this.loginService = loginService;
     }
 
-    public String login(String json) throws DataAccessException {
+    public String login(String request) throws DataAccessException {
         var serializer = new Gson();
-        var loginRequest = serializer.fromJson(json, LoginRequest.class);
+        var loginRequest = serializer.fromJson(request, LoginRequest.class);
         var loginResult = loginService.loginUser(loginRequest);
         return serializer.toJson(loginResult);
     }

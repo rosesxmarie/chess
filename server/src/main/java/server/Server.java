@@ -1,5 +1,6 @@
 package server;
 
+import RequestResult.JoinGameResult;
 import io.javalin.*;
 import dataaccess.*;
 import handler.*;
@@ -7,7 +8,6 @@ import service.*;
 
 
 public class Server {
-
     private final Javalin javalin;
     private final RegisterHandler registerHandler;
     private final ClearApplicationHandler clearApplicationHandler;
@@ -15,34 +15,30 @@ public class Server {
     private final LogoutHandler logoutHandler;
     private final CreateGameHandler createGameHandler;
     private final ListGamesHandler listGamesHandler;
-
+    private final JoinGameHandler joinGameHandler;
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        var userDAO = new MemoryUserDAO();
-        var authDAO = new MemoryAuthDAO();
-        var gameDAO = new MemoryGameDAO();
+        UserDAO userDAO = new MemoryUserDAO();
+        AuthDAO authDAO = new MemoryAuthDAO();
+        GameDAO gameDAO = new MemoryGameDAO();
 
-        registerHandler = new RegisterHandler(
-                new RegisterService(userDAO, authDAO));
-        clearApplicationHandler = new ClearApplicationHandler(
-                new ClearService(userDAO, authDAO,gameDAO));
-        loginHandler = new LoginHandler(
-                new LoginService(userDAO, authDAO));
-        logoutHandler = new LogoutHandler(
-                new LogoutService(authDAO));
+        registerHandler = new RegisterHandler(new RegisterService(userDAO, authDAO));
+        clearApplicationHandler = new ClearApplicationHandler(new ClearService(userDAO, authDAO,gameDAO));
+        loginHandler = new LoginHandler(new LoginService(userDAO, authDAO));
+        logoutHandler = new LogoutHandler(new LogoutService(authDAO));
         createGameHandler = new CreateGameHandler(new CreateGameService(authDAO, gameDAO));
         listGamesHandler = new ListGamesHandler(new ListGamesService(authDAO, gameDAO));
-
-
+        joinGameHandler = new JoinGameHandler(new JoinGameService(authDAO, gameDAO));
 
         javalin.post("/user", ctx -> ctx.result(registerHandler.register(ctx.body())));
-        javalin.delete("/db", clearApplicationHandler::clear);
+        javalin.delete("/db", ctx -> ctx.result(clearApplicationHandler.clear()));
         javalin.post("/session", ctx -> ctx.result(loginHandler.login(ctx.body())));
-        javalin.delete("/session", ctx -> logoutHandler.logoutUser(ctx));
+        javalin.delete("/session", ctx -> ctx.result(logoutHandler.logoutUser(ctx.header("authorization"))));
         javalin.post("/game", ctx -> ctx.result(createGameHandler.createGame(ctx.header("authorization"), ctx.body())));
-        javalin.get("/game", ctx -> listGamesHandler.listGames(ctx));
+        javalin.get("/game", ctx -> ctx.result(listGamesHandler.listGames(ctx.header("authorization"))));
+        javalin.put("/game", ctx -> ctx.result(joinGameHandler.joinGame(ctx.header("authorization"), ctx.body())));
 
 
         javalin.exception(AlreadyTakenException.class, (e, ctx) -> {
@@ -59,10 +55,7 @@ public class Server {
             ctx.status(401);
             ctx.result("{\"message\": \"" + e.getMessage() + "\"}");
         });
-
-
     }
-
 
     public int run(int desiredPort) {
         javalin.start(desiredPort);

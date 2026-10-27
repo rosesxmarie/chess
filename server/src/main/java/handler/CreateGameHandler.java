@@ -5,7 +5,6 @@ import dataaccess.DataAccessException;
 import RequestResult.CreateGameRequest;
 import service.CreateGameService;
 
-
 public class CreateGameHandler {
     private final CreateGameService createGameService;
 
@@ -13,10 +12,9 @@ public class CreateGameHandler {
         this.createGameService = createGameService;
     }
 
-    public String createGame(String authToken, String json) throws DataAccessException {
+    public String createGame(String authToken, String gameName) throws DataAccessException {
         var serializer = new Gson();
-
-        var request = serializer.fromJson(json, CreateGameRequest.class);
+        var request = serializer.fromJson(gameName, CreateGameRequest.class);
         var createGameRequest = new CreateGameRequest(authToken, request.gameName());
         var createGameResult = createGameService.createGame(createGameRequest);
         return serializer.toJson(createGameResult);

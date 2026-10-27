@@ -1,4 +1,7 @@
 package handler;
+import RequestResult.ClearRequest;
+import RequestResult.LogoutRequest;
+import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import io.javalin.http.Context;
 
@@ -15,8 +18,9 @@ public class ClearApplicationHandler {
         this.clearService = clearService;
     }
 
-    public void clear(Context ctx) throws DataAccessException {
-        clearService.clearApplication();
-        ctx.result("{}");
+    public String clear() throws DataAccessException {
+        var serializer = new Gson();
+        var clearResult = clearService.clearApplication();
+        return serializer.toJson(clearResult);
     }
 }
