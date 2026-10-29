@@ -15,13 +15,12 @@ public class MySQLUserDAO implements UserDAO {
         String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
 
         MySQLHelper.executeUpdate(statement, userData.username(), hashedPassword, userData.email());
-
     }
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, password, email FROM user WHERE usename =?";
+            var statement = "SELECT username, password, email FROM user WHERE username =?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, username);
                 try (var rs = ps.executeQuery()) {

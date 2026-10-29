@@ -6,6 +6,8 @@ import model.UserData;
 
 import java.util.Objects;
 import java.util.UUID;
+
+import org.mindrot.jbcrypt.BCrypt;
 import requestresult.*;
 
 public class LoginService {
@@ -28,7 +30,7 @@ public class LoginService {
             throw new UnauthorizedException();
         }
 
-        if (!Objects.equals(userData.password(), loginRequest.password())) {
+        if (!BCrypt.checkpw(loginRequest.password(), userData.password())) {
             throw new UnauthorizedException();
         }
 
