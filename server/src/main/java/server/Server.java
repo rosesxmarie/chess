@@ -21,13 +21,14 @@ public class Server {
 
         UserDAO userDAO;
         AuthDAO authDAO;
+        GameDAO gameDAO;
         try {
             userDAO = new MySQLUserDAO();
             authDAO = new MySQLAuthDAO();
+            gameDAO = new MySQLGameDAO();
         } catch (DataAccessException e) {
             throw new RuntimeException("Unable to connect to the database: " + e.getMessage());
         }
-        GameDAO gameDAO = new MemoryGameDAO();
 
         registerHandler = new RegisterHandler(new RegisterService(userDAO, authDAO));
         clearApplicationHandler = new ClearApplicationHandler(new ClearService(userDAO, authDAO,gameDAO));

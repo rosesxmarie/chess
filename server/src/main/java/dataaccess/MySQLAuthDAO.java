@@ -1,11 +1,9 @@
 package dataaccess;
 
 import model.AuthData;
-import model.UserData;
-
 import java.sql.SQLException;
 
-public class MySQLAuthDAO implements AuthDAO{
+public class MySQLAuthDAO implements AuthDAO {
     public MySQLAuthDAO() throws DataAccessException {
         MySQLHelper.configureDatabase(createStatements);
     }
@@ -45,7 +43,6 @@ public class MySQLAuthDAO implements AuthDAO{
         var statement = "DELETE FROM auth WHERE authToken=?";
         MySQLHelper.executeUpdate(statement, authData.authToken());
     }
-
 
     private final String[] createStatements = {
             """
