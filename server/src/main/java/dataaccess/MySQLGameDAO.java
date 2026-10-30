@@ -39,7 +39,7 @@ public class MySQLGameDAO implements GameDAO {
                     }
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
@@ -59,7 +59,7 @@ public class MySQLGameDAO implements GameDAO {
                     }
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
         }
         return result;
@@ -75,7 +75,6 @@ public class MySQLGameDAO implements GameDAO {
 
         return newGameData;
     }
-
 
     private final String[] createStatements = {
             """
