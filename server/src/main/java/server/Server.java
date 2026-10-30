@@ -61,6 +61,11 @@ public class Server {
             ctx.status(401);
             ctx.result("{\"message\": \"" + e.getMessage() + "\"}");
         });
+
+        javalin.exception(DataAccessException.class, (e, ctx) -> {
+            ctx.status(500);
+            ctx.result("{\"message\": \"Error:" + e.getMessage() + "\"}");
+        });
     }
 
     public int run(int desiredPort) {
