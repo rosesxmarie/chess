@@ -19,8 +19,14 @@ public class Server {
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        UserDAO userDAO = new MemoryUserDAO();
-        AuthDAO authDAO = new MemoryAuthDAO();
+        UserDAO userDAO;
+        AuthDAO authDAO;
+        try {
+            userDAO = new MySQLUserDAO();
+            authDAO = new MySQLAuthDAO();
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Unable to connect to the database: " + e.getMessage());
+        }
         GameDAO gameDAO = new MemoryGameDAO();
 
         registerHandler = new RegisterHandler(new RegisterService(userDAO, authDAO));
