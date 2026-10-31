@@ -1,5 +1,8 @@
 package server;
 
+import dataaccess.sql.MySQLAuthDAO;
+import dataaccess.sql.MySQLGameDAO;
+import dataaccess.sql.MySQLUserDAO;
 import io.javalin.*;
 import dataaccess.*;
 import handler.*;
