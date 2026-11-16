@@ -60,6 +60,7 @@ public class ChessClient {
                 case "create" -> create(params);
                 case "list" -> list();
                 case "join" -> play(params);
+                case "observe" -> observe(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -178,6 +179,32 @@ public class ChessClient {
         serverFacade.joinGame(joinGameRequest);
 
         return "You joined " + game.gameName() + " as player " + teamColor;
+    }
+
+    public String observe(String... params) throws ResponseException {
+        if (params.length != 2) {
+            throw new ResponseException(400, "Expected: join <ID> [WHITE|BLACK]");
+        }
+
+        int gameNum = 0;
+        try {
+            gameNum =  Integer.parseInt(params[0]);
+        } catch (NumberFormatException ex) {
+            throw new ResponseException(400, "Please provide game number.");
+        }
+
+        if (gameNum < 0 ||gameNum > games.size()) {
+            throw new ResponseException(400, "Invalid game number.");
+        }
+
+        String teamColor = params[1].toUpperCase();
+        if (!teamColor.equals("WHITE") && !teamColor.equals("BLACK")) {
+            throw new ResponseException(400, "Invalid Team Color.");
+        }
+
+        GameData game = games.get(gameNum-1);
+
+        return "You are observing " + game.gameName();
     }
 
     private void printPrompt() {
