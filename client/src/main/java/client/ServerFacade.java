@@ -22,6 +22,10 @@ public class ServerFacade {
         serverUrl = "http://localhost:" + port;
     }
 
+    public ServerFacade(String url) {
+        serverUrl = url;
+    }
+
     public ClearResult clear() throws ResponseException {
         var request = buildRequest("DELETE", "/db", null, null);
         var response = sendRequest(request);
@@ -96,8 +100,8 @@ public class ServerFacade {
 
     private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws ResponseException {
         var status = response.statusCode();
-        if (status != 200) {
-            throw new ResponseException(status, "[" + status + "] " + response.body());
+        if (!isSuccessful(status)) {
+            throw new ResponseException(status, "Request failed!");
         }
 
         if (responseClass != null) {
@@ -109,5 +113,4 @@ public class ServerFacade {
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
     }
-
 }
