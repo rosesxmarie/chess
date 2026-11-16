@@ -11,7 +11,6 @@ import model.GameData;
 public class CreateGameService {
     private final AuthDAO authDAO;
     private final GameDAO gameDAO;
-    private int newID = 1;
 
     public CreateGameService(AuthDAO authDAO, GameDAO gameDAO) {
         this.authDAO = authDAO;
@@ -29,7 +28,15 @@ public class CreateGameService {
             throw  new BadRequestException();
         }
 
-        int gameID = newID++;
+        int lastID = 0;
+        for (GameData game : gameDAO.listGames()) {
+            if (game.gameID() > lastID) {
+                lastID = game.gameID();
+            }
+        }
+
+        int gameID = lastID + 1;
+
         GameData gameData = new GameData(gameID, null, null, createGameRequest.gameName(), new ChessGame());
         gameDAO.createGame(gameData);
 

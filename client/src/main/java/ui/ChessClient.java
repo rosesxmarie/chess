@@ -1,11 +1,16 @@
 package ui;
 
 import client.ServerFacade;
+import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import handler.LogoutHandler;
+import model.GameData;
 import requestresult.*;
 import ui.State;
 import static ui.EscapeSequences.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Arrays;
 import client.ResponseException;
@@ -52,6 +57,7 @@ public class ChessClient {
                 case "login" -> login(params);
                 case "logout" -> logout(params);
                 case "create" -> create(params);
+                case "list" -> list();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -66,6 +72,9 @@ public class ChessClient {
     }
 
     public String register(String... params) throws ResponseException {
+        if (state == State.LOGGED_IN) {
+            throw  new ResponseException(400, "You are already logged in.");
+        }
         if (params.length != 3) {
             throw new ResponseException(400,"Expected: register <USERNAME> <PASSWORD> <EMAIL>");
         }
@@ -74,7 +83,7 @@ public class ChessClient {
         RegisterResult registerResult = serverFacade.registerUser(registerRequest);
 
         authToken = registerResult.authToken();
-        state = State.LOGGED_OUT;
+        state = State.LOGGED_IN;
 
         return String.format("You are now registered and logged in as %s.", registerResult.username());
     }
@@ -97,6 +106,9 @@ public class ChessClient {
     }
 
     public String logout(String... params) throws ResponseException {
+        if (state == State.LOGGED_OUT) {
+            throw new ResponseException(400, "You are not logged in.");
+        }
         LogoutRequest logoutRequest = new LogoutRequest(authToken);
         serverFacade.logoutUser(logoutRequest);
 
@@ -114,9 +126,27 @@ public class ChessClient {
         CreateGameRequest createGameRequest = new CreateGameRequest(authToken, params[0]);
         serverFacade.createGame(createGameRequest);
 
-        state = State.LOGGED_IN;
+        return "Game " + params[0] + " created.";
+    }
 
-        return String.format("Game " + params[0] + " created.");
+    public String list() throws ResponseException {
+        ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
+        ListGamesResult listGamesResult = serverFacade.listGames(listGamesRequest);
+        List<GameData> games = new ArrayList<>(listGamesResult.games());
+
+        if (games.isEmpty()) {
+            return "No games found.";
+        }
+
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < games.size(); i++) {
+            GameData game = games.get(i);
+            result.append(i+1).append(". ").append(" Game Name: ").append(game.gameName())
+                    .append(" White: ").append(game.whiteUsername())
+                    .append(" Black: ").append(game.blackUsername())
+                    .append("\n");
+        }
+        return result.toString();
     }
 
     private void printPrompt() {
