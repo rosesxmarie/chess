@@ -51,11 +51,17 @@ public class ChessClient {
                 case "register" -> register(params);
                 case "login" -> login(params);
                 case "logout" -> logout(params);
+                case "create" -> create(params);
                 case "quit" -> "quit";
                 default -> help();
             };
         } catch (ResponseException ex) {
-            return ex.getMessage();
+            return switch (ex.getStatusCode()) {
+                case 400 -> ex.getMessage();
+                case 401 -> "You are not authorized for this request.";
+                case 403 -> "That is already taken.";
+                default -> "Something went wrong. Please try again.";
+            };
         }
     }
 
@@ -74,8 +80,11 @@ public class ChessClient {
     }
 
     public String login(String... params) throws ResponseException {
+        if (state == State.LOGGED_IN) {
+            throw  new ResponseException(400, "You are already logged in.");
+        }
         if (params.length != 2) {
-            throw new ResponseException(400, "Expected: register <USERNAME> <PASSWORD>");
+            throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
         }
 
         LoginRequest loginRequest = new LoginRequest(params[0], params[1]);
@@ -95,6 +104,19 @@ public class ChessClient {
         state = State.LOGGED_OUT;
 
         return String.format("Logged out successfully.");
+    }
+
+    public String create(String... params) throws ResponseException {
+        if (params.length != 1) {
+            throw new ResponseException(400, "Expected: create <NAME>");
+        }
+
+        CreateGameRequest createGameRequest = new CreateGameRequest(authToken, params[0]);
+        serverFacade.createGame(createGameRequest);
+
+        state = State.LOGGED_IN;
+
+        return String.format("Game " + params[0] + " created.");
     }
 
     private void printPrompt() {
