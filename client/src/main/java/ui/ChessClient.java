@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import client.ServerFacade;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
@@ -178,6 +179,12 @@ public class ChessClient {
         JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, teamColor, game.gameID());
         serverFacade.joinGame(joinGameRequest);
 
+        if (teamColor.equals("WHITE")) {
+            BoardDisplay.draw(ChessGame.TeamColor.WHITE);
+        } else {
+            BoardDisplay.draw(ChessGame.TeamColor.BLACK);
+        }
+
         return "You joined " + game.gameName() + " as player " + teamColor;
     }
 
@@ -198,6 +205,8 @@ public class ChessClient {
         }
 
         GameData game = games.get(gameNum-1);
+
+        BoardDisplay.draw(ChessGame.TeamColor.WHITE);
 
         return "You are observing " + game.gameName();
     }
