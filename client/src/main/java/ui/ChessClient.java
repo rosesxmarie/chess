@@ -21,6 +21,7 @@ public class ChessClient {
     private final ServerFacade serverFacade;
     private State state = State.LOGGED_OUT;
     private String authToken = null;
+    private List<GameData> games = new ArrayList<>();
 
     public ChessClient(String serverUrl) {
         this.serverFacade = new ServerFacade(serverUrl);
@@ -58,6 +59,7 @@ public class ChessClient {
                 case "logout" -> logout(params);
                 case "create" -> create(params);
                 case "list" -> list();
+                case "join" -> play(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -132,7 +134,7 @@ public class ChessClient {
     public String list() throws ResponseException {
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
         ListGamesResult listGamesResult = serverFacade.listGames(listGamesRequest);
-        List<GameData> games = new ArrayList<>(listGamesResult.games());
+        games = new ArrayList<>(listGamesResult.games());
 
         if (games.isEmpty()) {
             return "No games found.";
@@ -147,6 +149,35 @@ public class ChessClient {
                     .append("\n");
         }
         return result.toString();
+    }
+
+    public String play(String... params) throws ResponseException {
+        if (params.length != 2) {
+            throw new ResponseException(400, "Expected: join <ID> [WHITE|BLACK]");
+        }
+
+        int gameNum = 0;
+        try {
+            gameNum =  Integer.parseInt(params[0]);
+        } catch (NumberFormatException ex) {
+            throw new ResponseException(400, "Please provide game number.");
+        }
+
+        if (gameNum < 0 ||gameNum > games.size()) {
+            throw new ResponseException(400, "Invalid game number.");
+        }
+
+        String teamColor = params[1].toUpperCase();
+        if (!teamColor.equals("WHITE") && !teamColor.equals("BLACK")) {
+            throw new ResponseException(400, "Invalid Team Color.");
+        }
+
+        GameData game = games.get(gameNum-1);
+
+        JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, teamColor, game.gameID());
+        serverFacade.joinGame(joinGameRequest);
+
+        return "You joined " + game.gameName() + " as player " + teamColor;
     }
 
     private void printPrompt() {
