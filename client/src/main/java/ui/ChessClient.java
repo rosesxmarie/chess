@@ -170,7 +170,7 @@ public class ChessClient {
 
         String teamColor = params[1].toUpperCase();
         if (!teamColor.equals("WHITE") && !teamColor.equals("BLACK")) {
-            throw new ResponseException(400, "Invalid Team Color.");
+            throw new ResponseException(400, "Invalid team Color.");
         }
 
         GameData game = games.get(gameNum-1);
@@ -182,8 +182,8 @@ public class ChessClient {
     }
 
     public String observe(String... params) throws ResponseException {
-        if (params.length != 2) {
-            throw new ResponseException(400, "Expected: join <ID> [WHITE|BLACK]");
+        if (params.length != 1) {
+            throw new ResponseException(400, "Expected: observe <ID>");
         }
 
         int gameNum = 0;
@@ -195,11 +195,6 @@ public class ChessClient {
 
         if (gameNum < 0 ||gameNum > games.size()) {
             throw new ResponseException(400, "Invalid game number.");
-        }
-
-        String teamColor = params[1].toUpperCase();
-        if (!teamColor.equals("WHITE") && !teamColor.equals("BLACK")) {
-            throw new ResponseException(400, "Invalid Team Color.");
         }
 
         GameData game = games.get(gameNum-1);
