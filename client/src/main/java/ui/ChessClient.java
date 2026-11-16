@@ -1,5 +1,122 @@
-package client;
+package ui;
+
+import client.ServerFacade;
+import dataaccess.DataAccessException;
+import handler.LogoutHandler;
+import requestresult.*;
+import ui.State;
+import static ui.EscapeSequences.*;
+import java.util.Scanner;
+import java.util.Arrays;
+import client.ResponseException;
+
+
 
 public class ChessClient {
-    private enum
+    private final ServerFacade serverFacade;
+    private State state = State.LOGGED_OUT;
+    private String authToken = null;
+
+    public ChessClient(String serverUrl) {
+        this.serverFacade = new ServerFacade(serverUrl);
+    }
+
+    public void run() {
+        System.out.println("Welcome to CS240 Chess. Type help to get started.");
+        System.out.print(help());
+
+        Scanner scanner = new Scanner(System.in);
+        var result = "";
+        while (!result.equals("quit")) {
+            printPrompt();
+            String line = scanner.nextLine();
+
+            try {
+                result = eval(line);
+                System.out.print(SET_TEXT_COLOR_BLUE + result);
+            } catch (Throwable e) {
+                var msg = e.toString();
+                System.out.print(msg);
+            }
+        }
+        System.out.println();
+    }
+
+    public String eval(String input) {
+        try {
+            String[] tokens = input.toLowerCase().split(" ");
+            String cmd = (tokens.length > 0) ? tokens[0] : "help";
+            String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "register" -> register(params);
+                case "login" -> login(params);
+                case "logout" -> logout(params);
+                case "quit" -> "quit";
+                default -> help();
+            };
+        } catch (ResponseException ex) {
+            return ex.getMessage();
+        }
+    }
+
+    public String register(String... params) throws ResponseException {
+        if (params.length != 3) {
+            throw new ResponseException(400,"Expected: register <USERNAME> <PASSWORD> <EMAIL>");
+        }
+
+        RegisterRequest registerRequest = new RegisterRequest(params[0], params[1], params[2]);
+        RegisterResult registerResult = serverFacade.registerUser(registerRequest);
+
+        authToken = registerResult.authToken();
+        state = State.LOGGED_OUT;
+
+        return String.format("You are now registered and logged in as %s.", registerResult.username());
+    }
+
+    public String login(String... params) throws ResponseException {
+        if (params.length != 2) {
+            throw new ResponseException(400, "Expected: register <USERNAME> <PASSWORD>");
+        }
+
+        LoginRequest loginRequest = new LoginRequest(params[0], params[1]);
+        LoginResult loginResult = serverFacade.loginUser(loginRequest);
+
+        authToken = loginResult.authToken();
+        state = State.LOGGED_IN;
+
+        return String.format("You are logged in as %s.", loginResult.username());
+    }
+
+    public String logout(String... params) throws ResponseException {
+        LogoutRequest logoutRequest = new LogoutRequest(authToken);
+        serverFacade.logoutUser(logoutRequest);
+
+        authToken = null;
+        state = State.LOGGED_OUT;
+
+        return String.format("Logged out successfully.");
+    }
+
+    private void printPrompt() {
+        System.out.print("\n" + RESET_TEXT_COLOR + ">>> " + SET_TEXT_COLOR_GREEN);
+    }
+
+    public String help() {
+        if (state == State.LOGGED_OUT) {
+            return """
+                    - register <USERNAME> <PASSWORD> <EMAIL> - to create an account
+                    - login <USERNAME> <PASSWORD> - to play chess
+                    - quit - playing chess
+                    - help - with possible commands
+                    """;
+        }
+        return """
+                - create <NAME> - a game
+                - list - games
+                - join <ID> [WHITE|BLACK] - a game
+                - logout - when you are done
+                - quit - playing chess
+                - help - with possible commands
+                """;
+    }
 }
