@@ -39,8 +39,8 @@ public class ServerFacadeTests {
         RegisterRequest registerRequest = new RegisterRequest("test", "test123", "test@byu.edu");
         RegisterResult registerResult = serverFacade.registerUser(registerRequest);
 
-        assertEquals("test",  registerResult.username());
-        assertNotNull(registerResult.authToken());
+        Assertions.assertEquals("test",  registerResult.username());
+        Assertions.assertNotNull(registerResult.authToken());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class ServerFacadeTests {
         RegisterRequest badRequest = new RegisterRequest(null, "test123", "test@byu.edu");
 
         ResponseException ex = assertThrows(ResponseException.class, () -> serverFacade.registerUser(badRequest));
-        assertEquals(400, ex.getStatusCode());
+        Assertions.assertEquals(400, ex.getStatusCode());
     }
 
     @Test
@@ -59,8 +59,8 @@ public class ServerFacadeTests {
         LoginRequest loginRequest = new LoginRequest("test", "test123");
         LoginResult loginResult = serverFacade.loginUser(loginRequest);
 
-        assertEquals("test",  loginResult.username());
-        assertNotNull(loginResult.authToken());
+        Assertions.assertEquals("test",  loginResult.username());
+        Assertions.assertNotNull(loginResult.authToken());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class ServerFacadeTests {
         LoginRequest badUsernameRequest = new LoginRequest(null, "test123");
 
         ResponseException ex = assertThrows(ResponseException.class, () -> serverFacade.loginUser(badUsernameRequest));
-        assertEquals(400, ex.getStatusCode());
+        Assertions.assertEquals(400, ex.getStatusCode());
     }
 
     @Test
@@ -85,7 +85,7 @@ public class ServerFacadeTests {
         LogoutRequest logoutRequest = new LogoutRequest(loginResult.authToken());
         LogoutResult logoutResult = serverFacade.logoutUser(logoutRequest);
 
-        assertNotNull(logoutResult);
+        Assertions.assertNotNull(logoutResult);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class ServerFacadeTests {
         LogoutRequest logoutRequest = new LogoutRequest(loginResult.authToken());
         LogoutResult logoutResult = serverFacade.logoutUser(logoutRequest);
 
-        assertNotNull(logoutResult);
+        Assertions.assertNotNull(logoutResult);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class ServerFacadeTests {
         CreateGameRequest createGameRequest = new CreateGameRequest(loginResult.authToken(), "gameName");
         CreateGameResult createGameResult = serverFacade.createGame(createGameRequest);
 
-        assertNotNull(createGameResult);
+        Assertions.assertNotNull(createGameResult);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class ServerFacadeTests {
         CreateGameRequest createGameRequest = new CreateGameRequest("fakeToken", "gameName");
 
         ResponseException ex = assertThrows(ResponseException.class, () -> serverFacade.createGame(createGameRequest));
-        assertEquals(401, ex.getStatusCode());
+        Assertions.assertEquals(401, ex.getStatusCode());
     }
 
     @Test
@@ -141,7 +141,7 @@ public class ServerFacadeTests {
         ListGamesRequest listGamesRequest = new ListGamesRequest(loginResult.authToken());
         ListGamesResult listGamesResult = serverFacade.listGames(listGamesRequest);
 
-        assertNotNull(listGamesResult);
+        Assertions.assertNotNull(listGamesResult);
     }
 
     @Test
@@ -149,7 +149,7 @@ public class ServerFacadeTests {
         ListGamesRequest listGamesRequest = new ListGamesRequest("fakeToken");
 
         ResponseException ex = assertThrows(ResponseException.class, () -> serverFacade.listGames(listGamesRequest));
-        assertEquals(401, ex.getStatusCode());
+        Assertions.assertEquals(401, ex.getStatusCode());
     }
 
     @Test
@@ -166,7 +166,7 @@ public class ServerFacadeTests {
         JoinGameRequest joinGameRequest = new JoinGameRequest(loginResult.authToken(), "WHITE", createGameResult.gameID());
         JoinGameResult joinGameResult = serverFacade.joinGame(joinGameRequest);
 
-        assertNotNull(joinGameResult);
+        Assertions.assertNotNull(joinGameResult);
     }
 
     @Test
@@ -174,8 +174,6 @@ public class ServerFacadeTests {
         JoinGameRequest joinGameRequest = new JoinGameRequest("fakeToken", "WHITE", 1);
 
         ResponseException ex = assertThrows(ResponseException.class, () -> serverFacade.joinGame(joinGameRequest));
-        assertEquals(401, ex.getStatusCode());
-
+        Assertions.assertEquals(401, ex.getStatusCode());
     }
-
 }

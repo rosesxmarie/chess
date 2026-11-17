@@ -2,21 +2,14 @@ package ui;
 
 import chess.ChessGame;
 import client.ServerFacade;
-import com.google.gson.Gson;
-import dataaccess.DataAccessException;
-import handler.LogoutHandler;
 import model.GameData;
 import requestresult.*;
-import ui.State;
 import static ui.EscapeSequences.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Arrays;
 import client.ResponseException;
-
-
 
 public class ChessClient {
     private final ServerFacade serverFacade;
@@ -30,8 +23,6 @@ public class ChessClient {
 
     public void run() {
         System.out.println("Welcome to CS240 Chess. Type help to get started.");
-        System.out.print(help());
-
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
@@ -123,6 +114,9 @@ public class ChessClient {
     }
 
     public String create(String... params) throws ResponseException {
+        if (state == State.LOGGED_OUT) {
+            throw new ResponseException(400, "Please login first.");
+        }
         if (params.length != 1) {
             throw new ResponseException(400, "Expected: create <NAME>");
         }
@@ -134,6 +128,9 @@ public class ChessClient {
     }
 
     public String list() throws ResponseException {
+        if (state == State.LOGGED_OUT) {
+            throw new ResponseException(400, "Please login first.");
+        }
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
         ListGamesResult listGamesResult = serverFacade.listGames(listGamesRequest);
         games = new ArrayList<>(listGamesResult.games());
@@ -154,6 +151,9 @@ public class ChessClient {
     }
 
     public String play(String... params) throws ResponseException {
+        if (state == State.LOGGED_OUT) {
+            throw new ResponseException(400, "Please login first.");
+        }
         if (params.length != 2) {
             throw new ResponseException(400, "Expected: join <ID> [WHITE|BLACK]");
         }
@@ -189,6 +189,9 @@ public class ChessClient {
     }
 
     public String observe(String... params) throws ResponseException {
+        if (state == State.LOGGED_OUT) {
+            throw new ResponseException(400, "Please login first.");
+        }
         if (params.length != 1) {
             throw new ResponseException(400, "Expected: observe <ID>");
         }

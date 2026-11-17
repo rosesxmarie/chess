@@ -16,7 +16,7 @@ public class BoardDisplay {
     private static final String[] WHITE_PIECES = {WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK};
 
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
@@ -63,7 +63,6 @@ public class BoardDisplay {
             }
             drawColHeaders(out, teamColor);
         }
-
 
     private static void drawSquares(PrintStream out, int row, int col) {
             if ((row + col) % 2 == 0) {
@@ -134,6 +133,4 @@ public class BoardDisplay {
         out.print(SET_TEXT_COLOR_RED);
         out.print(piece);
     }
-
-
 }

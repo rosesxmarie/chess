@@ -2,12 +2,8 @@ package client;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
-import client.ResponseException;
 import requestresult.*;
-
 import java.net.*;
 import java.net.http.*;
 import java.net.http.HttpResponse;
