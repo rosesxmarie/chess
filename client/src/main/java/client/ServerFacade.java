@@ -75,7 +75,6 @@ public class ServerFacade {
             request.setHeader("authorization", authToken);
         }
         return request.build();
-
     }
 
     private HttpRequest.BodyPublisher makeRequestBody(Object request) {

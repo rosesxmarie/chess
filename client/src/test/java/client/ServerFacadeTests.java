@@ -90,16 +90,10 @@ public class ServerFacadeTests {
 
     @Test
     public void logoutUserNegative() throws ResponseException {
-        RegisterRequest registerRequest = new RegisterRequest("test", "test123", "test@byu.edu");
-        serverFacade.registerUser(registerRequest);
+        LogoutRequest logoutRequest = new LogoutRequest("fakeToken");
 
-        LoginRequest loginRequest = new LoginRequest("test", "test123");
-        LoginResult loginResult = serverFacade.loginUser(loginRequest);
-
-        LogoutRequest logoutRequest = new LogoutRequest(loginResult.authToken());
-        LogoutResult logoutResult = serverFacade.logoutUser(logoutRequest);
-
-        Assertions.assertNotNull(logoutResult);
+        ResponseException ex = assertThrows(ResponseException.class, () -> serverFacade.logoutUser(logoutRequest));
+        Assertions.assertEquals(401, ex.getStatusCode());
     }
 
     @Test
@@ -125,7 +119,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void ListGamesPositive() throws ResponseException {
+    public void listGamesPositive() throws ResponseException {
         RegisterRequest registerRequest = new RegisterRequest("test", "test123", "test@byu.edu");
         serverFacade.registerUser(registerRequest);
 

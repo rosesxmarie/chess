@@ -12,8 +12,10 @@ public class BoardDisplay {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final String[] COLUMN_HEADERS = {"a", "b", "c", "d", "e", "f", "g", "h"};
     private static final String[] ROW_HEADERS = {"1", "2", "3", "4", "5", "6", "7", "8"};
-    private static final String[] BLACK_PIECES = {BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP, BLACK_QUEEN, BLACK_KING, BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK};
-    private static final String[] WHITE_PIECES = {WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK};
+    private static final String[] BLACK_PIECES = {BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP, BLACK_QUEEN,
+            BLACK_KING, BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK};
+    private static final String[] WHITE_PIECES = {WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN,
+            WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK};
 
 
     static void main(String[] args) {
