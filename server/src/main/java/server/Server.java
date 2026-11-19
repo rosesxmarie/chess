@@ -6,6 +6,8 @@ import dataaccess.sql.MySQLUserDAO;
 import io.javalin.*;
 import dataaccess.*;
 import handler.*;
+import io.javalin.websocket.WsMessageHandler;
+import org.jetbrains.annotations.NotNull;
 import service.*;
 
 
@@ -34,7 +36,7 @@ public class Server {
         }
 
         registerHandler = new RegisterHandler(new RegisterService(userDAO, authDAO));
-        clearApplicationHandler = new ClearApplicationHandler(new ClearService(userDAO, authDAO,gameDAO));
+        clearApplicationHandler = new ClearApplicationHandler(new ClearService(userDAO, authDAO, gameDAO));
         loginHandler = new LoginHandler(new LoginService(userDAO, authDAO));
         logoutHandler = new LogoutHandler(new LogoutService(authDAO));
         createGameHandler = new CreateGameHandler(new CreateGameService(authDAO, gameDAO));
@@ -48,7 +50,15 @@ public class Server {
         javalin.post("/game", ctx -> ctx.result(createGameHandler.createGame(ctx.header("authorization"), ctx.body())));
         javalin.get("/game", ctx -> ctx.result(listGamesHandler.listGames(ctx.header("authorization"))));
         javalin.put("/game", ctx -> ctx.result(joinGameHandler.joinGame(ctx.header("authorization"), ctx.body())));
-
+        javalin.ws("/ws", ws -> {
+                    ws.onConnect(ctx -> {
+                        ctx.enableAutomaticPings();
+                        System.out.println("WebSocket connected");
+                    });
+                    ws.onMessage(getWsMessageHandler());
+                    ws.onClose(ctx -> System.out.println("WebSocket closed"));
+                })
+                .start(8080);
 
         javalin.exception(AlreadyTakenException.class, (e, ctx) -> {
             ctx.status(403);
@@ -69,6 +79,11 @@ public class Server {
             ctx.status(500);
             ctx.result("{\"message\": \"Error:" + e.getMessage() + "\"}");
         });
+    }
+
+    @NotNull
+    private static WsMessageHandler getWsMessageHandler() {
+        return ctx -> ctx.send("{\"WebSocket response\": \"" + ctx.message() + "\"}");
     }
 
     public int run(int desiredPort) {
